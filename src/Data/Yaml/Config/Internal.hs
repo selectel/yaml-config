@@ -1,7 +1,6 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE LambdaCase #-}
 
 module Data.Yaml.Config.Internal
     ( Config(..)
@@ -79,7 +78,7 @@ lookup conf path = foldM lookupSubconfig conf (init pathes) >>=
 lookupSubconfig :: Config       -- ^ (Sub)Config for find
                 -> Key          -- ^ Field name
                 -> Maybe Config -- ^ Maybe Subconfig
-lookupSubconfig (Config parents o) k = HashMap.lookup k o >>= \case
+lookupSubconfig (Config parents o) k = HashMap.lookup k o >>= \s -> case s of
     (Yaml.Object so) -> Just $ Config (k : parents) so
     _                -> Nothing
 
