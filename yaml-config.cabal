@@ -1,0 +1,44 @@
+Name:               yaml-config
+Version:            0.0.1
+Synopsis:           Configuration management
+Description:        Configuration management
+License:            MIT
+License-file:       LICENSE
+Copyright:          Selectel
+Author:             Fedor Gogolev <knsd@knsd.net>
+                    Mitroshin Maxim <mitroshin@selectel.org>
+Maintainer:         knsd@knsd.net
+Category:           Configuration
+Build-type:         Simple
+Cabal-version:      >= 1.14
+Tested-with:        GHC == 7.6.*
+
+Library
+  Hs-source-dirs:   src
+  Default-language: Haskell2010
+  Ghc-options:      -Wall -fno-warn-orphans
+  Build-depends:    base                       == 4.6.*
+                  , deepseq                    == 1.3.*
+                  , unordered-containers       == 0.2.*
+                  , text                       == 0.11.*
+                  , yaml                       == 0.8.*
+
+  Exposed-modules:  Data.Yaml.Config
+  Other-modules:    Data.Yaml.Config.Internal
+
+Test-suite howl-tests
+  Main-is:          Tests.hs
+  Hs-source-dirs:   src, tests
+  Default-language: Haskell2010
+  Type:             exitcode-stdio-1.0
+
+  Build-depends:    base                       == 4.6.*
+                  , deepseq                    == 1.3.*
+                  , unordered-containers       == 0.2.*
+                  , text                       == 0.11.*
+                  , yaml                       == 0.8.*
+                  , hashable                   == 1.2.*
+
+                  , test-framework             == 0.8.*
+                  , test-framework-quickcheck2 == 0.3.*
+                  , QuickCheck                 == 2.5.*
