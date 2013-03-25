@@ -7,7 +7,7 @@ License-file:       LICENSE
 Copyright:          Selectel
 Author:             Fedor Gogolev <knsd@knsd.net>
                     Mitroshin Maxim <mitroshin@selectel.org>
-Maintainer:         knsd@knsd.net
+Maintainer:         mitroshin@selectel.org
 Category:           Configuration
 Build-type:         Simple
 Cabal-version:      >= 1.14
@@ -42,3 +42,7 @@ Test-suite howl-tests
                   , test-framework             == 0.8.*
                   , test-framework-quickcheck2 == 0.3.*
                   , QuickCheck                 == 2.5.*
+
+Source-repository head
+    Type:     git
+    Location: https://github.com/selectel/yaml-config

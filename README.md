@@ -54,4 +54,4 @@ main = do
 
 ## Links
 
-[Hackage](hackage)
+[Hackage](http://hackage.haskell.org/package/yaml-config)
