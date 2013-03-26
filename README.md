@@ -25,7 +25,7 @@ module Main where
 
 import Data.Word (Word16)
 
-import Data.Config (load, subconfig, lookupDefault, require)
+import Data.Yaml.Config (load, subconfig, lookupDefault, require)
 
 main :: IO ()
 main = do
@@ -46,7 +46,7 @@ main = do
 
 ```
 > ./server
-127.0.0.7
+127.0.0.1
 8080
 /var/log/server/error.log
 /var/log/server/access.log
