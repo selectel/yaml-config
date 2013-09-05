@@ -81,10 +81,9 @@ lookupMaybe conf path = foldM lookupSubconfig conf (init pathes) >>=
     look k (Config _ o) = HashMap.lookup k o >>= parseMaybe parseJSON
     pathes = ST.splitOn "." path
 
--- | Subconfig wrapped into @Maybe@
-lookupSubconfig :: Config       -- ^ (Sub)Config for find
-                -> Key          -- ^ Field name
-                -> Maybe Config -- ^ Maybe Subconfig
+lookupSubconfig :: Config
+                -> Key
+                -> Maybe Config
 lookupSubconfig (Config parents o) k = HashMap.lookup k o >>= \s -> case s of
     (Yaml.Object so) -> Just $ Config (k : parents) so
     _                -> Nothing
@@ -108,8 +107,6 @@ subconfig c path = maybe err return $ lookupSubconfig c path
   where
     err = ke $ "Subconfig " <> fullpath c path <> " not found."
 
--- | Same as @lookup@ buf fail with @KeyError@
--- if there is no field with target name
 require :: FromJSON a => Config -> Key -> IO a
 require = lookup
 {-# DEPRECATED require "use `lookup` instead" #-}
