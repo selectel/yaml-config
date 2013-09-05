@@ -8,11 +8,9 @@ module Data.Yaml.Config.Internal
     , Key
     , load
     , keys
-    , lookupSubconfig
     , subconfig
     , lookup
     , lookupDefault
-    , require
     , fullpath
     ) where
 
@@ -75,19 +73,11 @@ lookup c path = maybe err return $ lookupMaybe c path
     err = ke $ "Field " <> fullpath c path <> " not found or has wrong type."
 
 lookupMaybe :: FromJSON a => Config -> Key -> Maybe a
-lookupMaybe conf path = foldM lookupSubconfig conf (init pathes) >>=
+lookupMaybe conf path = foldM subconfig conf (init pathes) >>=
     look (last pathes)
   where
     look k (Config _ o) = HashMap.lookup k o >>= parseMaybe parseJSON
     pathes = ST.splitOn "." path
-
-lookupSubconfig :: Config
-                -> Key
-                -> Maybe Config
-lookupSubconfig (Config parents o) k = HashMap.lookup k o >>= \s -> case s of
-    (Yaml.Object so) -> Just $ Config (k : parents) so
-    _                -> Nothing
-{-# DEPRECATED lookupSubconfig "use `subconfig` instead" #-}
 
 -- | Find value in (sub)config and return it or default value
 lookupDefault :: FromJSON a
@@ -103,10 +93,8 @@ subconfig :: Failure KeyError m
           => Config    -- ^ (Sub)Config for find
           -> Key       -- ^ Subconfig name
           -> m Config -- ^ Subconfig
-subconfig c path = maybe err return $ lookupSubconfig c path
+subconfig c@(Config parents o) path = case HashMap.lookup path o of
+    Just (Yaml.Object so) -> return $ Config (path : parents) so
+    _                     -> err
   where
     err = ke $ "Subconfig " <> fullpath c path <> " not found."
-
-require :: FromJSON a => Config -> Key -> IO a
-require = lookup
-{-# DEPRECATED require "use `lookup` instead" #-}
