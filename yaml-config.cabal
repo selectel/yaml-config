@@ -22,6 +22,7 @@ Library
                   , unordered-containers       == 0.2.*
                   , text                       == 0.11.*
                   , yaml                       == 0.8.*
+                  , failure                    == 0.2.*
 
   Exposed-modules:  Data.Yaml.Config
   Other-modules:    Data.Yaml.Config.Internal
@@ -37,6 +38,7 @@ Test-suite howl-tests
                   , unordered-containers       == 0.2.*
                   , text                       == 0.11.*
                   , yaml                       == 0.8.*
+                  , failure                    == 0.2.*
                   , hashable                   == 1.2.*
 
                   , test-framework             == 0.8.*
