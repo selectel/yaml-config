@@ -9,23 +9,22 @@ Load, parse and find fields in YAML config files.
 
 ### YAML config
 
-```yaml
+~~~ {.yaml}
 server:
     port: 8080
     logs:
         access: /var/log/server/access.log
         error:  /var/log/server/error.log
-```
+~~~
 ### Haskell source
 
-```haskell
+~~~ {.haskell}
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 
 module Main where
-
+import Prelude hiding (lookup)
 import Data.Word (Word16)
-
-import Data.Yaml.Config (load, subconfig, lookupDefault, require)
+import Data.Yaml.Config (load, subconfig, lookupDefault, lookup)
 
 main :: IO ()
 main = do
@@ -36,21 +35,21 @@ main = do
     let port :: Word16 = lookupDefault serverConfig "port" 80
 
     logConfig <- subconfig serverConfig "logs"
-    accessLog <- require logConfig "access"
-    errorLog <- require logConfig "error"
+    accessLog <- lookup logConfig "access"
+    errorLog <- lookup logConfig "error"
 
     mapM_ putStrLn [interface, (show port), errorLog, accessLog]
-```
+~~~
 
 ### Result
 
-```
-> ./server
+~~~
+$ ./server
 127.0.0.1
 8080
 /var/log/server/error.log
 /var/log/server/access.log
-```
+~~~
 
 ## Links
 
