@@ -88,6 +88,7 @@ lookupSubconfig :: Config       -- ^ (Sub)Config for find
 lookupSubconfig (Config parents o) k = HashMap.lookup k o >>= \s -> case s of
     (Yaml.Object so) -> Just $ Config (k : parents) so
     _                -> Nothing
+{-# DEPRECATED lookupSubconfig "use `subconfig` instead" #-}
 
 -- | Find value in (sub)config and return it or default value
 lookupDefault :: FromJSON a
@@ -111,3 +112,4 @@ subconfig c path = maybe err return $ lookupSubconfig c path
 -- if there is no field with target name
 require :: FromJSON a => Config -> Key -> IO a
 require = lookup
+{-# DEPRECATED require "use `lookup` instead" #-}

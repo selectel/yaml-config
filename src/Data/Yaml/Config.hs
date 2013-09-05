@@ -5,10 +5,12 @@ module Data.Yaml.Config
     , Key
     , load
     , keys
-    , lookupSubconfig
     , subconfig
     , lookup
     , lookupDefault
+
+    -- deprecated stuff
+    , lookupSubconfig
     , require
     ) where
 
