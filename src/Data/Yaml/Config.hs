@@ -1,4 +1,3 @@
-{-# OPTIONS_HADDOCK prune #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module Data.Yaml.Config
@@ -9,10 +8,6 @@ module Data.Yaml.Config
     , subconfig
     , lookup
     , lookupDefault
-
-    -- deprecated stuff
-    , lookupSubconfig
-    , require
     ) where
 
 import Data.Yaml.Config.Internal

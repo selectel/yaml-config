@@ -18,7 +18,7 @@ import Test.QuickCheck.Monadic (assert)
 import Data.Yaml(Object, Value(Object, Null))
 import qualified Data.HashMap.Strict as HashMap
 
-import Data.Yaml.Config.Internal (Config(Config), Key, lookupSubconfig, keys,
+import Data.Yaml.Config.Internal (Config(Config), Key, subconfig, keys,
                                   fullpath)
 
 type CorrectPath = [Key]
@@ -48,24 +48,24 @@ deepConfig' n | n > 0 = do
 testCorrectSubconfigPath :: DeepObject -> Bool
 testCorrectSubconfigPath (DeepObject _ []) = True
 testCorrectSubconfigPath (DeepObject config (key : others)) =
-    maybe False (`subcheck` others) $ lookupSubconfig config key
+    maybe False (`subcheck` others) $ subconfig key config
   where
     subcheck sc keys = testCorrectSubconfigPath $ DeepObject sc keys
 
 testWrongSubconfigPath :: DeepObject -> Bool
 testWrongSubconfigPath (DeepObject config []) = List.null $ keys config
 testWrongSubconfigPath (DeepObject config (nextKey : others)) =
-    maybe nextCheck (const False) $ lookupSubconfig config wrongKey
+    maybe nextCheck (const False) $ subconfig wrongKey config
   where
     nextCheck = maybe False (testWrongSubconfigPath . nextDeep) $
-        lookupSubconfig config nextKey
+        subconfig nextKey config
     nextDeep = flip DeepObject others
     wrongKey = nextKey <> "_"
 
 testCorrectPath :: DeepObject -> Bool
 testCorrectPath = testCorrectPath' []
 testCorrectPath' path (DeepObject config (nextKey : others)) = checkPath config
-    && (maybe False (`subcheck` others) $ lookupSubconfig config nextKey)
+    && (maybe False (`subcheck` others) $ subconfig nextKey config)
   where
     subcheck sc keys = testCorrectPath' (nextKey : path) $ DeepObject sc keys
     checkPath c = fullpath c nextKey ==
