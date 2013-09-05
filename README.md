@@ -22,10 +22,9 @@ server:
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 
 module Main where
-
+import Prelude hiding (lookup)
 import Data.Word (Word16)
-
-import Data.Yaml.Config (load, subconfig, lookupDefault, require)
+import Data.Yaml.Config (load, subconfig, lookupDefault, lookup)
 
 main :: IO ()
 main = do
@@ -36,8 +35,8 @@ main = do
     let port :: Word16 = lookupDefault serverConfig "port" 80
 
     logConfig <- subconfig serverConfig "logs"
-    accessLog <- require logConfig "access"
-    errorLog <- require logConfig "error"
+    accessLog <- lookup logConfig "access"
+    errorLog <- lookup logConfig "error"
 
     mapM_ putStrLn [interface, (show port), errorLog, accessLog]
 ~~~
