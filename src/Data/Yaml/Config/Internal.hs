@@ -52,8 +52,8 @@ fullpath :: Config -> Key -> Key
 fullpath (Config parents _) path = ST.intercalate "." $
     reverse $ path : parents
 
--- | Find file in filesystem and try to load it as YAML config
--- May fail with @KeyError@
+-- | Find file in filesystem and try to load it as YAML config.
+-- May fail with @KeyError@.
 load :: FilePath -> IO Config
 load f = maybe err (return . Config []) =<< Yaml.decodeFile f
   where
@@ -63,7 +63,8 @@ load f = maybe err (return . Config []) =<< Yaml.decodeFile f
 keys :: Config -> [Key]
 keys (Config _ o) = HashMap.keys o
 
--- | Field value wrapped into @Maybe@ (sub)config
+-- | Get value for given key.
+-- May fail with @KeyError@.
 lookup :: (Failure KeyError m, FromJSON a)
        => Config  -- ^ (Sub)Config for find
        -> Key     -- ^ Field name
@@ -87,8 +88,8 @@ lookupDefault :: FromJSON a
               -> a      -- ^ Return value
 lookupDefault c p d = fromMaybe d $ lookup c p
 
--- | Find subconfig
--- May fail with @KeyError@
+-- | Find subconfig.
+-- May fail with @KeyError@.
 subconfig :: Failure KeyError m
           => Config    -- ^ (Sub)Config for find
           -> Key       -- ^ Subconfig name
