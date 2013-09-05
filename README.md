@@ -9,16 +9,16 @@ Load, parse and find fields in YAML config files.
 
 ### YAML config
 
-```yaml
+~~~ {.yaml}
 server:
     port: 8080
     logs:
         access: /var/log/server/access.log
         error:  /var/log/server/error.log
-```
+~~~
 ### Haskell source
 
-```haskell
+~~~ {.haskell}
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 
 module Main where
@@ -40,17 +40,17 @@ main = do
     errorLog <- require logConfig "error"
 
     mapM_ putStrLn [interface, (show port), errorLog, accessLog]
-```
+~~~
 
 ### Result
 
-```
-> ./server
+~~~
+$ ./server
 127.0.0.1
 8080
 /var/log/server/error.log
 /var/log/server/access.log
-```
+~~~
 
 ## Links
 
