@@ -10,8 +10,8 @@ import Data.List as List
 import Data.Text as Text
 import qualified Data.Text as ST
 
-import Test.Framework (defaultMain, testGroup)
-import Test.Framework.Providers.QuickCheck2 (testProperty)
+import Test.Tasty (defaultMain, testGroup)
+import Test.Tasty.QuickCheck (testProperty)
 import Test.QuickCheck (Gen, Property, Arbitrary(..), elements, sized, oneof,
                         listOf)
 import Test.QuickCheck.Monadic (assert)
@@ -73,11 +73,8 @@ testCorrectPath' path (DeepObject config (nextKey : others)) = checkPath config
 testCorrectPath' _ (DeepObject config []) = List.null $ keys config
 
 main :: IO ()
-main = defaultMain
-    [
-        testGroup "lookup"
-            [ testProperty "wrongSubconfigPath" testWrongSubconfigPath
-            , testProperty "correctSubconfigPath" testCorrectSubconfigPath
-            , testProperty "correctPath" testCorrectPath
-            ]
+main = defaultMain $ testGroup "Tests"
+    [ testProperty "wrongSubconfigPath" testWrongSubconfigPath
+    , testProperty "correctSubconfigPath" testCorrectSubconfigPath
+    , testProperty "correctPath" testCorrectPath
     ]
