@@ -28,11 +28,11 @@ import Data.Yaml.Config (load, subconfig, lookupDefault, lookup)
 
 main :: IO ()
 main = do
-    config <- load "./server.yaml"
+    config <- load "./example.yaml"
 
     serverConfig <- subconfig config "server"
     let interface = lookupDefault serverConfig "interface" "127.0.0.1"
-    let port :: Word16 = lookupDefault serverConfig "port" 80
+        port :: Word16 = lookupDefault serverConfig "port" 80
 
     logConfig <- subconfig serverConfig "logs"
     accessLog <- lookup logConfig "access"
