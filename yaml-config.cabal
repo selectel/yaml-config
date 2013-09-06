@@ -7,6 +7,7 @@ License-file:       LICENSE
 Copyright:          Selectel
 Author:             Fedor Gogolev <knsd@knsd.net>
                     Mitroshin Maxim <mitroshin@selectel.org>
+                    Simon Hengel <sol@typeful.net>
 Maintainer:         mitroshin@selectel.org
 Category:           Configuration
 Build-type:         Simple
