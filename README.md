@@ -30,13 +30,13 @@ main :: IO ()
 main = do
     config <- load "./example.yaml"
 
-    serverConfig <- subconfig config "server"
-    let interface = lookupDefault serverConfig "interface" "127.0.0.1"
-        port :: Word16 = lookupDefault serverConfig "port" 80
+    serverConfig <- subconfig "server" config
+    let interface = lookupDefault "interface" "127.0.0.1" serverConfig
+        port :: Word16 = lookupDefault "port" 80 serverConfig
 
-    logConfig <- subconfig serverConfig "logs"
-    accessLog <- lookup logConfig "access"
-    errorLog <- lookup logConfig "error"
+    logConfig <- subconfig "logs" serverConfig
+    accessLog <- lookup "access" logConfig
+    errorLog <- lookup "error" logConfig
 
     mapM_ putStrLn [interface, (show port), errorLog, accessLog]
 ~~~
