@@ -26,7 +26,7 @@ Library
                   , failure                    == 0.2.*
 
   Exposed-modules:  Data.Yaml.Config
-  Other-modules:    Data.Yaml.Config.Internal
+                    Data.Yaml.Config.Internal
 
 Test-suite howl-tests
   Main-is:          Tests.hs
