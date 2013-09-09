@@ -5,19 +5,17 @@
 
 module Data.Yaml.Config.Internal
     ( Config(..)
+    , KeyError(..)
     , Key
 
-    -- * public API
-    -- ** work with files
+    -- * Work with files
     , load
 
-    -- **explore config
+    -- * Explore config
     , keys
     , subconfig
     , lookup
     , lookupDefault
-
-    -- * export for tests
     , fullpath
     ) where
 

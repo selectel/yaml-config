@@ -37,6 +37,7 @@
 module Data.Yaml.Config
     ( Config
     , Key
+    , KeyError(..)
     , load
     , keys
     , subconfig
