@@ -31,6 +31,7 @@ import qualified Data.Text as ST
 import Data.Yaml (Object, FromJSON(parseJSON), parseMaybe)
 import qualified Data.HashMap.Strict as HashMap
 import qualified Data.Yaml as Yaml
+import qualified Data.Yaml.Include as YamlInclude
 import Control.Failure
 
 -- | Config or field name
@@ -67,7 +68,7 @@ fullpath (Config parents _) path = ST.intercalate "." $
 -- >>> config <- load "example.yaml"
 --
 load :: FilePath -> IO Config
-load f = maybe err (return . Config []) =<< Yaml.decodeFile f
+load f = maybe err (return . Config []) =<< YamlInclude.decodeFile f
   where
     err = error $ "Invalid config file " <> f <> "."
 
