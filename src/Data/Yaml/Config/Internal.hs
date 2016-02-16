@@ -1,7 +1,6 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleContexts   #-}
+{-# LANGUAGE OverloadedStrings  #-}
 
 module Data.Yaml.Config.Internal
     ( Config(..)
@@ -19,20 +18,20 @@ module Data.Yaml.Config.Internal
     , fullpath
     ) where
 
-import Prelude hiding (lookup)
-import Control.DeepSeq (NFData(rnf))
-import Control.Exception (Exception)
-import Control.Monad (foldM)
-import Data.Maybe (fromMaybe)
-import Data.Monoid ((<>))
-import Data.Typeable (Typeable)
-import qualified Data.Text as ST
+import           Control.DeepSeq     (NFData (rnf))
+import           Control.Exception   (Exception, throw)
+import           Control.Monad       (foldM)
+import           Data.Maybe          (fromMaybe)
+import           Data.Monoid         ((<>))
+import qualified Data.Text           as ST
+import           Data.Typeable       (Typeable)
+import           Prelude             hiding (lookup)
 
-import Data.Yaml (Object, FromJSON(parseJSON), parseMaybe)
 import qualified Data.HashMap.Strict as HashMap
-import qualified Data.Yaml as Yaml
-import qualified Data.Yaml.Include as YamlInclude
 import Control.Failure
+import           Data.Yaml           (FromJSON (parseJSON), Object, parseMaybe)
+import qualified Data.Yaml           as Yaml
+import qualified Data.Yaml.Include   as YamlInclude
 
 -- | Config or field name
 type Key = ST.Text

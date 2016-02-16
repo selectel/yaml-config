@@ -2,24 +2,19 @@
 
 module Main where
 
-import Control.Monad (liftM)
-import Data.Monoid ((<>))
-import Data.Hashable (Hashable)
-import Data.Text (Text)
-import Data.List as List
-import Data.Text as Text
-import qualified Data.Text as ST
+import           Control.Monad             (liftM)
+import           Data.List                 as List
+import           Data.Monoid               ((<>))
+import           Data.Text                 as Text
 
-import Test.Tasty (defaultMain, testGroup)
-import Test.Tasty.QuickCheck (testProperty)
-import Test.QuickCheck (Gen, Property, Arbitrary(..), elements, sized, oneof,
-                        listOf)
-import Test.QuickCheck.Monadic (assert)
-import Data.Yaml(Object, Value(Object, Null))
-import qualified Data.HashMap.Strict as HashMap
+import qualified Data.HashMap.Strict       as HashMap
+import           Data.Yaml                 (Object, Value (Object))
+import           Test.QuickCheck           (Arbitrary (..), Gen, sized)
+import           Test.Tasty                (defaultMain, testGroup)
+import           Test.Tasty.QuickCheck     (testProperty)
 
-import Data.Yaml.Config.Internal (Config(Config), Key, subconfig, keys,
-                                  fullpath)
+import           Data.Yaml.Config.Internal (Config (Config), Key, fullpath,
+                                            keys, subconfig)
 
 type CorrectPath = [Key]
 
@@ -35,22 +30,22 @@ newObject :: [(Key, Value)] -> Object
 newObject = HashMap.fromList
 
 deepConfig :: Gen DeepObject
-deepConfig = sized deepConfig' >>= \(keys, obj) ->
-    return $ DeepObject (Config [] obj) $ List.tail keys
+deepConfig = sized deepConfig' >>= \(ks, obj) ->
+    return $ DeepObject (Config [] obj) $ List.tail ks
 
 deepConfig' :: Int -> Gen ([Key], Object)
-deepConfig' 0 = arbitrary >>= \newKey -> return $ ([newKey], newObject [])
+deepConfig' 0 = arbitrary >>= \newKey -> return ([newKey], newObject [])
 deepConfig' n | n > 0 = do
     newKey <- arbitrary
-    (keys, newNode) <- deepConfig' (pred n)
-    return $ (newKey : keys, newObject [(List.head keys , Object newNode)])
+    (ks, newNode) <- deepConfig' (pred n)
+    return (newKey : ks, newObject [(List.head ks , Object newNode)])
 
 testCorrectSubconfigPath :: DeepObject -> Bool
 testCorrectSubconfigPath (DeepObject _ []) = True
 testCorrectSubconfigPath (DeepObject config (key : others)) =
     maybe False (`subcheck` others) $ subconfig key config
   where
-    subcheck sc keys = testCorrectSubconfigPath $ DeepObject sc keys
+    subcheck sc = testCorrectSubconfigPath . DeepObject sc
 
 testWrongSubconfigPath :: DeepObject -> Bool
 testWrongSubconfigPath (DeepObject config []) = List.null $ keys config
@@ -64,13 +59,14 @@ testWrongSubconfigPath (DeepObject config (nextKey : others)) =
 
 testCorrectPath :: DeepObject -> Bool
 testCorrectPath = testCorrectPath' []
-testCorrectPath' path (DeepObject config (nextKey : others)) = checkPath config
-    && (maybe False (`subcheck` others) $ subconfig nextKey config)
   where
-    subcheck sc keys = testCorrectPath' (nextKey : path) $ DeepObject sc keys
-    checkPath c = fullpath c nextKey ==
-                  (ST.intercalate "." $ List.reverse $ nextKey : path)
-testCorrectPath' _ (DeepObject config []) = List.null $ keys config
+    testCorrectPath' path (DeepObject config (nextKey : others)) = checkPath config
+        && maybe False (`subcheck` others) (subconfig nextKey config)
+      where
+        subcheck sc = testCorrectPath' (nextKey : path) . DeepObject sc
+        checkPath c = fullpath c nextKey ==
+            Text.intercalate "." (List.reverse $ nextKey : path)
+    testCorrectPath' _ (DeepObject config []) = List.null $ keys config
 
 main :: IO ()
 main = defaultMain $ testGroup "Tests"
