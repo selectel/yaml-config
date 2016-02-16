@@ -1,1 +1,5 @@
 :set -isrc -pgmL markdown-unlit
+:set -package tasty
+:set -package QuickCheck
+:set -package tasty-quickcheck
+:set +c
