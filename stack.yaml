@@ -1,6 +1,5 @@
 resolver: lts-5.0
 flags: {}
+extra-deps: []
 packages:
   - .
-extra-deps:
-  - failure-0.2.0.3

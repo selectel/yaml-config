@@ -23,7 +23,6 @@ Library
                   , text                       >= 0.11.0
                   , unordered-containers       >= 0.2.0
                   , yaml                       >= 0.8.10
-                  , failure                    >= 0.2.0
 
   Exposed-modules:  Data.Yaml.Config
                     Data.Yaml.Config.Internal
@@ -37,7 +36,6 @@ Test-suite yaml-config-tests
   Build-depends:    QuickCheck                 >= 2.6.0
                   , base                       >= 4.5.0 && < 5.0.0
                   , deepseq                    >= 1.3
-                  , failure                    >= 0.2.0
                   , hashable                   >= 1.2.0
                   , tasty                      >= 0.10.0
                   , tasty-quickcheck           >= 0.8.0

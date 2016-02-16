@@ -28,7 +28,6 @@ import           Data.Typeable       (Typeable)
 import           Prelude             hiding (lookup)
 
 import qualified Data.HashMap.Strict as HashMap
-import Control.Failure
 import           Data.Yaml           (FromJSON (parseJSON), Object, parseMaybe)
 import qualified Data.Yaml           as Yaml
 import qualified Data.Yaml.Include   as YamlInclude
@@ -49,8 +48,8 @@ data Config = Config [Key] Object
 instance NFData Config where
     rnf (Config p o) = rnf p `seq` rnf o `seq` ()
 
-ke :: Failure KeyError m => Key -> m a
-ke = failure . KeyError
+ke :: Monad m => Key -> m a
+ke = throw . KeyError
 
 -- | Show full path from the root to target key. Levels are separated by dots.
 --
@@ -87,7 +86,7 @@ keys (Config _ o) = HashMap.keys o
 -- >>> putStrLn =<< lookup "field1" sub
 -- value1
 --
-lookup :: (Failure KeyError m, FromJSON a)
+lookup :: (Monad m, FromJSON a)
        => Key                               -- ^ Field name
        -> Config                            -- ^ Config for find
        -> m a                               -- ^ Field value
@@ -120,7 +119,7 @@ lookupDefault p d = fromMaybe d . lookup p
 -- >>> :set -XOverloadedStrings
 -- >>> sub <- subconfig "section1" config
 --
-subconfig :: Failure KeyError m
+subconfig :: Monad m
           => Key                 -- ^ Subconfig name
           -> Config              -- ^ (Sub)Config for find
           -> m Config            -- ^ Founded Subconfig
