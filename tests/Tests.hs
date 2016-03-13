@@ -2,21 +2,19 @@
 
 module Main where
 
-import           Control.Monad             (liftM)
-import           Data.List                 as List
-import           Data.Monoid               ((<>))
-import           Data.Text                 as Text
+import Control.Monad (liftM)
+import Data.List as List
+import Data.Monoid ((<>))
+import Data.Text as Text
 
-import qualified Data.HashMap.Strict       as HashMap
-import           Data.Yaml                 (Object, Value (Object))
-import           Test.QuickCheck           (Arbitrary (..), Gen, expectFailure,
-                                            sized)
-import           Test.QuickCheck.Monadic   (monadicIO, run)
-import           Test.Tasty                (defaultMain, testGroup)
-import           Test.Tasty.QuickCheck     (Property, testProperty)
+import qualified Data.HashMap.Strict as HashMap
+import Data.Yaml (Object, Value (Object))
+import Test.QuickCheck (Arbitrary (..), Gen, expectFailure, sized)
+import Test.QuickCheck.Monadic (monadicIO, run)
+import Test.Tasty (defaultMain, testGroup)
+import Test.Tasty.QuickCheck (Property, testProperty)
 
-import           Data.Yaml.Config.Internal (Config (Config), Key, fullpath,
-                                            keys, subconfig)
+import Data.Yaml.Config.Internal (Config (Config), Key, fullpath, keys, subconfig)
 
 type CorrectPath = [Key]
 
