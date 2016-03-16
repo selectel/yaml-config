@@ -3,14 +3,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Data.Yaml.Config.Internal
-    ( Config(..)
+    (
+    -- * Types
+      Config(..)
     , KeyError(..)
     , Key
 
-    -- * Work with files
+    -- * Loading
     , load
 
-    -- * Explore config
+    -- * Access functions
     , keys
     , subconfig
     , lookup
@@ -51,17 +53,18 @@ instance NFData Config where
 ke :: Monad m => Key -> m a
 ke = throw . KeyError
 
--- | Show full path from the root to target key. Levels are separated by dots.
+-- | Returns full path from the root to the given key.
+-- Levels are separated by dots.
 --
 -- >>> fullpath sub "field1"
 -- "section1.field1"
 --
 fullpath :: Config -> Key -> Key
-fullpath (Config parents _) path = ST.intercalate "." $
-    reverse $ path : parents
+fullpath (Config parents _) path =
+    ST.intercalate "." $ reverse (path : parents)
 
--- | Find file in filesystem and try to load it as YAML config.
--- May fail with @InvalidYaml@ if file not found.
+-- | Attempts to load a config from a given YAML file.
+-- Fails with @InvalidYaml@ if the file does not exist.
 --
 -- >>> config <- load "example.yaml"
 --
@@ -70,7 +73,7 @@ load f = maybe err (return . Config []) =<< YamlInclude.decodeFile f
   where
     err = error $ "Invalid config file " <> f <> "."
 
--- | Show all first level config field's.
+-- | Returns all toplevel keys in a config.
 --
 -- >>> keys config
 -- ["section1","section2"]
@@ -78,8 +81,8 @@ load f = maybe err (return . Config []) =<< YamlInclude.decodeFile f
 keys :: Config -> [Key]
 keys (Config _ o) = HashMap.keys o
 
--- | Get value for given key.
--- May fail with @KeyError@ if key doesn't exist.
+-- | Returns a value for a given key.
+-- Fails with a @KeyError@ if the key doesn't exist.
 --
 -- >>> keys sub
 -- ["field1","field2"]
@@ -87,13 +90,20 @@ keys (Config _ o) = HashMap.keys o
 -- value1
 --
 lookup :: (Monad m, FromJSON a)
-       => Key                               -- ^ Field name
-       -> Config                            -- ^ Config for find
-       -> m a                               -- ^ Field value
+       => Key                   -- ^ Field name
+       -> Config                -- ^ Config to query
+       -> m a                   -- ^ Looked up value
 lookup path c = maybe err return $ lookupMaybe path c
   where
     err = ke $ "Field " <> fullpath c path <> " not found or has wrong type."
 
+-- | An exception-free alternative to @lookup@.
+--
+-- >>> keys sub
+-- ["field1","field2"]
+-- >>> lookupMaybe "field1" sub
+-- Just "value1"
+--
 lookupMaybe :: FromJSON a => Key -> Config -> Maybe a
 lookupMaybe path conf = foldM (flip subconfig) conf (init pathes) >>=
     look (last pathes)
@@ -101,28 +111,28 @@ lookupMaybe path conf = foldM (flip subconfig) conf (init pathes) >>=
     look k (Config _ o) = HashMap.lookup k o >>= parseMaybe parseJSON
     pathes = ST.splitOn "." path
 
--- | Find value in config and return it or return default value.
+-- | Returns a value for a given key or a default value if a key doesn't exist.
 --
 -- >>> lookupDefault "field3" "def" sub
 -- "def"
 --
 lookupDefault :: FromJSON a
-              => Key         -- ^ Field name
-              -> a           -- ^ Default value
-              -> Config      -- ^ Config for find
-              -> a           -- ^ Founded or default value
+              => Key            -- ^ Field name
+              -> a              -- ^ Default value
+              -> Config         -- ^ Config to query
+              -> a              -- ^ Looked up or default value
 lookupDefault p d = fromMaybe d . lookup p
 
--- | Get subconfig by name.
--- May fail with @KeyError@ if target key doesn't exist at current level.
+-- | Narrows into a config section corresponding to a given key.
+-- Fails with a @KeyError@ if a key doesn't exist at the current level.
 --
 -- >>> :set -XOverloadedStrings
 -- >>> sub <- subconfig "section1" config
 --
 subconfig :: Monad m
           => Key                 -- ^ Subconfig name
-          -> Config              -- ^ (Sub)Config for find
-          -> m Config            -- ^ Founded Subconfig
+          -> Config              -- ^ (Sub)Config to narrow into
+          -> m Config            -- ^ Subconfig
 subconfig path c@(Config parents o) = case HashMap.lookup path o of
     Just (Yaml.Object so) -> return $ Config (path : parents) so
     _                     -> err
