@@ -1,0 +1,5 @@
+server:
+    port: 8080
+    logs:
+        access: /var/log/server/access.log
+        error:  /var/log/server/error.log

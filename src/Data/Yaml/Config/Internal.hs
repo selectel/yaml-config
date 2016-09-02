@@ -121,7 +121,7 @@ lookupDefault :: FromJSON a
               -> a              -- ^ Default value
               -> Config         -- ^ Config to query
               -> a              -- ^ Looked up or default value
-lookupDefault p d = fromMaybe d . lookup p
+lookupDefault p d = fromMaybe d . lookupMaybe p
 
 -- | Narrows into a config section corresponding to a given key.
 -- Fails with a @KeyError@ if a key doesn't exist at the current level.
