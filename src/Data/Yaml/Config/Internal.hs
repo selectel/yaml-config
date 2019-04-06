@@ -17,6 +17,7 @@ module Data.Yaml.Config.Internal
     , subconfig
     , lookup
     , lookupDefault
+    , lookupMaybe
     , fullpath
     ) where
 
@@ -104,6 +105,7 @@ lookup path c = maybe err return $ lookupMaybe path c
 -- >>> lookupMaybe "field1" sub
 -- Just "value1"
 --
+-- @since 0.4.1
 lookupMaybe :: FromJSON a => Key -> Config -> Maybe a
 lookupMaybe path conf = foldM (flip subconfig) conf (init pathes) >>=
     look (last pathes)
