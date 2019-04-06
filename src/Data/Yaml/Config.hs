@@ -43,6 +43,7 @@ module Data.Yaml.Config
     , subconfig
     , lookup
     , lookupDefault
+    , lookupMaybe
     ) where
 
 import Data.Yaml.Config.Internal
